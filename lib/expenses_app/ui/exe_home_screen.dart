@@ -27,15 +27,21 @@ class _ExpensesHomeState extends State<ExpensesHome> {
     // ),
   ];
 
-  List<Transaction> get _recentTransactions{
+  List<Transaction> get _recentTransactions {
     return _userTransactions.where((element) {
       return element.date.isAfter(
-        DateTime.now().subtract(Duration(days: 7),),
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
       );
     }).toList();
   }
 
-  void _addNewTx(String title, double amount, DateTime chosenDate,) {
+  void _addNewTx(
+    String title,
+    double amount,
+    DateTime chosenDate,
+  ) {
     final newTx = Transaction(
       id: DateTime.now().toString(),
       title: title,
@@ -62,29 +68,66 @@ class _ExpensesHomeState extends State<ExpensesHome> {
         });
   }
 
+  bool _showChart = false;
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((value) => value.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: const Text('Personal Expenses'),
+      actions: [
+        IconButton(
+          onPressed: () => _startAddNewTransaction(context),
+          icon: const Icon(Icons.add),
+        )
+      ],
+    );
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () => _startAddNewTransaction(context),
           child: const Icon(Icons.add),
         ),
-        appBar: AppBar(
-          title: const Text('Personal Expenses'),
-          actions: [
-            IconButton(
-              onPressed: () => _startAddNewTransaction(context),
-              icon: const Icon(Icons.add),
-            )
-          ],
-        ),
+        appBar: appBar,
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Chart(recentTransactions: _recentTransactions ),
-              TransactionList(transactions: _userTransactions)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              _showChart ?SizedBox(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.7,
+                  child: Chart(recentTransactions: _recentTransactions)):
+              SizedBox(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.7,
+                child: TransactionList(
+                  transactions: _userTransactions,
+                  deleteTx: _deleteTransaction,
+                ),
+              )
             ],
           ),
         ));

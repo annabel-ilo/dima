@@ -7,35 +7,41 @@ class TransactionList extends StatelessWidget {
   const TransactionList({
     Key? key,
     required this.transactions,
+    required this.deleteTx,
   }) : super(key: key);
   final List<Transaction> transactions;
+  final Function deleteTx;
 
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
-        ? Column(
-            children: [
-              const Text(
-                'No transactions added yet!',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 200,
-                child: Image.asset(
-                  'assets/images/waiting.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
+        ? LayoutBuilder(
+            builder: (
+              BuildContext context,
+              BoxConstraints constraints,
+            ) {
+              return Column(
+                children: [
+                  const Text(
+                    'No transactions added yet!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: constraints.maxHeight*0.6,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              );
+            },
           )
         : Container(
-            height: 300,
             child: ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
@@ -51,11 +57,11 @@ class TransactionList extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: FittedBox(
-                          child: Text('N ${transactions[index].amount}'),
+                          child: Text(
+                              'N ${transactions[index].amount.toStringAsFixed(2)}'),
                         ),
                       ),
                     ),
-                    
                     title: Text(
                       transactions[index].title,
                       style: Theme.of(context).textTheme.titleMedium,
@@ -68,8 +74,11 @@ class TransactionList extends StatelessWidget {
                       ),
                     ),
                     trailing: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        deleteTx(transactions[index].id);
+                      },
+                      icon: const Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
                     ),
                   ),
                 );
