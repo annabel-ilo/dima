@@ -36,63 +36,71 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              controller: titleController,
-              onSubmitted: (_) => submitData(),
-              // onChanged: (value) => titleInput = value,
-              decoration: const InputDecoration(
-                labelText: 'Title',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 6,
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 8,
+            top: 8,
+            right: 8,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextField(
+                controller: titleController,
+                onSubmitted: (_) => submitData(),
+                // onChanged: (value) => titleInput = value,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                ),
               ),
-            ),
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => submitData(),
-              // onChanged: (value) => amountInput = value,
-              decoration: const InputDecoration(
-                labelText: 'Amount',
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => submitData(),
+                // onChanged: (value) => amountInput = value,
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                ),
               ),
-            ),
-            SizedBox(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No Date Chosen'
-                          : 'pickedDate: ${DateFormat.yMd().format(_selectedDate!)}',
-                    ),
-                  ),
-                  TextButton(
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
+              SizedBox(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No Date Chosen'
+                            : 'pickedDate: ${DateFormat.yMd().format(_selectedDate!)}',
                       ),
                     ),
-                    onPressed: _presentDatePicker,
-                  ),
-                ],
+                    TextButton(
+                      child: Text(
+                        'Choose Date',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: _presentDatePicker,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              child: Text(
-                "Add Transaction",
-                style: TextStyle(color: Theme.of(context).primaryColorLight),
+              ElevatedButton(
+                child: Text(
+                  "Add Transaction",
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
+                onPressed: () {
+                  submitData();
+                },
               ),
-              onPressed: () {
-                submitData();
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
